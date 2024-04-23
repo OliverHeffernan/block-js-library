@@ -44,7 +44,7 @@ function importFromFile(url) {
     
     const xhr = new XMLHttpRequest(); // Create a new XMLHttpRequest object
 
-    xhr.open("GET", url, true); // Prepare the request
+    xhr.open("GET", url, false); // Prepare the request
     xhr.send(); // Send the request
 
     // Return the response text if the request was successful
