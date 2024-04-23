@@ -29,12 +29,13 @@ else if (tempImports.length == 1)
     });
 }
 
+var originalBody = document.body.innerHTML;
+
 function FillCopies() {
     console.log("filled");
     var blocks = document.getElementsByTagName('block');
     blocks = [...blocks];
 
-    document.getElementsByTagName('blocks')[0].style.display = 'none';
 
     blocks.forEach(function (block)
     {
@@ -69,6 +70,28 @@ function FillCopies() {
         });
         block.style.display = 'none';
     });
+
+    var variables = document.getElementsByTagName('var');
+    document.getElementsByTagName('variables')[0].style.display = 'none';
+    variables = [...variables];
+    var body = document.body.innerHTML;
+    variables.forEach(function (elm) {
+        var name = '[' + elm.className + ']';
+        var value = elm.innerHTML;
+        body = body.split(name).join(value);
+    });
+    document.body.innerHTML = body;
+
+    document.getElementsByTagName('blocks')[0].style.display = 'none';
+    document.getElementsByTagName('variables')[0].style.display = 'none';
+    document.getElementsByTagName('imports')[0].style.display = 'none';
+}
+
+function SetVar (name, value)
+{
+    document.body.innerHTML = originalBody;
+    document.getElementsByClassName(name)[0].innerHTML = value;
+    FillCopies();
 }
 
 FillCopies();
