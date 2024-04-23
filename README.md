@@ -20,7 +20,32 @@ This is the main feature, it allows the developer to write a block once, and nev
 ```
 Within the blocks tag, we define what the egblock tag will have within it. Then we can repeat this by placing a egblock tag anywhere on the page.
 ### Imports:
-This allows the developer to have seperate files for the blocks to be imported from. This means that these files can be imported into each page of the website. This is very useful for things like navbars, which should be exactly the same on each page of the website. (This feature only works when the website is being run on a server; localhost will work.)
+This allows the developer to have seperate files for the blocks to be imported from. This means that these files can be imported into each page of the website. This is very useful for things like navbars, which should be exactly the same on each page of the website. (This feature only works when the website is being run on a server; localhost will work.)<br><br>
+navbar.html
+```html
+<block class="navbar">
+    <ul>
+        <li>Home</li>
+        <li>About Us</li>
+    </ul>
+</block>
+```
+index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <imports>navbar.html</imports>
+    <blocks></blocks>
+    <navbar></navbar>
+</body>
+</html>
+```
 ### Block Attributes:
 When you have multiple copies of an element on your webpage, but they each have slight differences. e.g. A product container on an online shopping website, the same container, but with a different image, title, and other attributes. On a block, you can have attributes, that can be set for each copy of the block.
 ```html
