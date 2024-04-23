@@ -6,6 +6,9 @@
     <title>Document</title>
 </head>
 <body>
+    <variables>
+        <var class="name">John Doe</var>
+    </variables>
     <imports>navbar.html, footer.html</imports>
     <blocks>
         <block class="egblock a1,a2,a3">
@@ -19,10 +22,10 @@
         </block>
     </blocks>
     <heading></heading>
-    <egblock class="text 1,text 2,text 3"></egBlock>
-    <egblock class="text 1,Hello,text 3"></egBlock>
+    <egblock class="[name],text 2,text 3"></egBlock>
+    <egblock class="text 1,Hello,[name]"></egBlock>
+    <p>[name]</p>
     <footer></footer>
     <script src="block.js"></script>
-    <script src="userScript.js"></script>
 </body>
 </html>
