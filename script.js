@@ -1,3 +1,4 @@
 function submit() {
-    SetVar('name', document.getElementById('nameInput').value);
+    setVar('name', document.getElementById('nameInput').value);
+    copyBlock('egblock', 'body', 'this,is,copy');
 }

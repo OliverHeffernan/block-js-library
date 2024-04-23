@@ -51,7 +51,7 @@ function importFromFile(url) {
     return xhr.status === 200 ? xhr.responseText : error("Failed to import file: " + url);
 }
 
-function FillCopies() {
+function fillCopies() {
     console.log("filled");
     var blocks = document.getElementsByTagName('block');
     blocks = [...blocks];
@@ -91,27 +91,31 @@ function FillCopies() {
         block.style.display = 'none';
     });
 
-    var variables = document.getElementsByTagName('var');
-    document.getElementsByTagName('variables')[0].style.display = 'none';
-    variables = [...variables];
-    var body = document.body.innerHTML;
-    variables.forEach(function (elm) {
-        var name = '[' + elm.className + ']';
-        var value = elm.innerHTML;
-        body = body.split(name).join(value);
+    // new variables system with <ref> tags
+    var refs = document.getElementsByTagName('ref');
+    refs = [...refs];
+    refs.forEach(function (ref) {
+        ref.innerHTML = document.getElementsByTagName('variables')[0].getElementsByClassName(ref.className)[0].innerHTML;
     });
-    document.body.innerHTML = body;
 
     document.getElementsByTagName('blocks')[0].style.display = 'none';
     document.getElementsByTagName('variables')[0].style.display = 'none';
     document.getElementsByTagName('imports')[0].style.display = 'none';
 }
 
-function SetVar (name, value)
+function setVar (name, value)
 {
-    document.body.innerHTML = originalBody;
     document.getElementsByClassName(name)[0].innerHTML = value;
-    FillCopies();
+    fillCopies();
+}
+
+function copyBlock (name, parent, atrs)
+{
+    var newCopy = document.createElement(name);
+    newCopy.className = atrs;
+    var parentElm = document.querySelector(parent); 
+    parentElm.appendChild(newCopy);
+    fillCopies();
 }
 
 function error(message) {
@@ -121,4 +125,4 @@ function error(message) {
 
 processImports();
 var originalBody = document.body.innerHTML;
-FillCopies();
+fillCopies();
