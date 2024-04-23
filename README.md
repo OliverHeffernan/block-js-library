@@ -1,6 +1,6 @@
 # Block.js
 ## What is it?
-Block.js is a lightweight, simple-to-use JavaScript front-end framework. It makes it extremely simple to have multiple similar elements, without extremely repetitive code.
+Block.js is an open-source, lightweight, simple-to-use JavaScript front-end framework. It makes it extremely simple to have multiple similar elements, without extremely repetitive code.
 ## Features
 ### Repeatable blocks: 
 This is the main feature, it allows the developer to write a block once, and never have to repeat it again throughout the website.
