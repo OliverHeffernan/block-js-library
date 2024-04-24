@@ -7,11 +7,11 @@
 </head>
 <body>
     <variables>
-        <var class="name">John Doe</var>
+        <var class="name-save"></var>
     </variables>
     <imports>navbar.html,footer.html</imports>
     <blocks>
-        <block class="egblock a1,a2,a3">
+        <block class="egblock-a1,a2,a3">
             <table>
                 <tr>
                     <td>[a1]</td>
@@ -26,7 +26,7 @@
     <egblock class="text 1,Hello,<ref class='name'></ref>"></egBlock>
     <p><ref class="name"></ref></p>
     <input id="nameInput" type="text">
-    <button onclick="submit()">Submit</button>
+    <button onclick="setVar('name', document.getElementById('nameInput').value)">Submit</button>
     <footer></footer>
     <script src="block.js"></script>
     <script src="script.js"></script>

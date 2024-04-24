@@ -59,14 +59,14 @@ function fillCopies() {
     {
         var hasAtrs = true;
         var blockName;
-        if (!block.className.includes(' '))
+        if (!block.className.includes('-'))
         {
             hasAtrs = false;
             blockName = block.className;
         }
         else
         {
-            var blockFtrs = block.className.split(' ');
+            var blockFtrs = block.className.split(' ')[0].split('-');
             blockName = blockFtrs[0];
             var blockAtrs = blockFtrs[1].split(",");
         }
@@ -92,8 +92,15 @@ function fillCopies() {
     // new variables system with <ref> tags
     var refs = document.getElementsByTagName('ref');
     refs = [...refs];
+    var variables = document.getElementsByTagName('var');
+    variables = [...variables];
     refs.forEach(function (ref) {
-        ref.innerHTML = document.getElementsByTagName('variables')[0].getElementsByClassName(ref.className)[0].innerHTML;
+        variables.forEach(function (variable) {
+            if (variable.className.split('-')[0] == ref.className)
+            {
+                ref.innerHTML = variable.innerHTML;
+            }
+        });
     });
 
     document.getElementsByTagName('blocks')[0].style.display = 'none';
@@ -103,8 +110,36 @@ function fillCopies() {
 
 function setVar (name, value)
 {
-    document.getElementsByClassName(name)[0].innerHTML = value;
+    var variables = document.getElementsByTagName('var');
+    variables = [...variables];
+    variables.forEach(function (variable) {
+        var atrs = variable.className.split('-');
+        if (atrs[0] == name)
+        {
+            variable.innerHTML = value;
+            if (atrs[1] == 'save')
+            {
+                localStorage.setItem(name, value);
+            }
+        }
+    });
     fillCopies();
+}
+
+function loadSavedVars ()
+{
+    var variables = document.getElementsByTagName('var');
+    variables = [...variables];
+    variables.forEach(function (variable) {
+        var atrs = variable.className.split('-');
+        if (atrs[1] == 'save')
+        {
+            if (localStorage.getItem(atrs[0]) != null)
+            {
+                variable.innerHTML = localStorage.getItem(atrs[0]);
+            }
+        }
+    });
 }
 
 function getVar (name)
@@ -132,4 +167,5 @@ function error(message) {
 }
 
 processImports();
+loadSavedVars();
 fillCopies();
