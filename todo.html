@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo</title>
+</head>
+<body>
+    <imports>task.html</imports>
+    <blocks></blocks>
+    <variables>
+    </variables>
+    <div id="tasks"></div>
+    <input id="taskInput" type="text">
+    <button onclick="copyBlock('task', '#tasks', document.getElementById('taskInput').value)">Add</button>
+</body>
+<script src="block.js"></script>
+</html>

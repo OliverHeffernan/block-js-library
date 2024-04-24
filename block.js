@@ -52,10 +52,8 @@ function importFromFile(url) {
 }
 
 function fillCopies() {
-    console.log("filled");
     var blocks = document.getElementsByTagName('block');
     blocks = [...blocks];
-
 
     blocks.forEach(function (block)
     {
@@ -109,6 +107,16 @@ function setVar (name, value)
     fillCopies();
 }
 
+function getVar (name)
+{
+    return document.getElementsByTagName('variables')[0].getElementsByClassName(name)[0].innerHTML;
+}
+
+function numberOfCopies (name)
+{
+    return document.getElementsByTagName(name).length;
+}
+
 function copyBlock (name, parent, atrs)
 {
     var newCopy = document.createElement(name);
@@ -124,5 +132,4 @@ function error(message) {
 }
 
 processImports();
-var originalBody = document.body.innerHTML;
 fillCopies();
