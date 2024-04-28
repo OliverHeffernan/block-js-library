@@ -1,4 +1,7 @@
-console.log('block.js loaded');
+const usingBlocks = document.getElementsByTagName('blocks')[0] !== undefined;
+const usingVariables = document.getElementsByTagName('variables')[0] !== undefined;
+const usingImports = document.getElementsByTagName('imports')[0] !== undefined;
+
 /**
  * This function is used to process the <imports> tag and import the files listed within it to the <blocks> tag.
  */
@@ -52,61 +55,101 @@ function importFromFile(url) {
     return xhr.status === 200 ? xhr.responseText : error("Failed to import file: " + url);
 }
 
-function fillCopies() {
-    var blocks = document.getElementsByTagName('block');
-    blocks = [...blocks];
+/**
+ * This function is used to process the page and populate the blocks, variables.
+ * Additinally, hide the <blocks>, <variables>, and <imports> tags.
+ */
+function populatePage() {
+    if (usingBlocks) {
+        populateBlocks();
+        document.getElementsByTagName('blocks')[0].style.display = 'none';
+    }
 
-    blocks.forEach(function (block)
-    {
-        var hasAtrs = true;
-        var blockName;
-        if (!block.className.includes('-'))
-        {
-            hasAtrs = false;
-            blockName = block.className;
-        }
-        else
-        {
-            var blockFtrs = block.className.split(' ')[0].split('-');
-            blockName = blockFtrs[0];
-            var blockAtrs = blockFtrs[1].split(",");
-        }
-        var blockCopies = document.getElementsByTagName(blockName)
-        var blockCopiesArray = [...blockCopies];
+    if (usingVariables) {
+        populateVariables();
+        document.getElementsByTagName('variables')[0].style.display = 'none';
+    }
 
-        blockCopiesArray.forEach(function (copy) {
-            var content = block.innerHTML;
-            if (hasAtrs)
-            {
-                var copyAtrs = copy.className.split(',');
-                blockAtrs.forEach(function (atr, index) {
-                    content = content.replace("[" + atr + "]", copyAtrs[index]);
+    if (usingImports)
+        document.getElementsByTagName('imports')[0].style.display = 'none';
+}
+
+/**
+ * This function populates all 'block' elements in the document.
+ */
+function populateBlocks() {
+    // Get an array of all 'block' definitions in the document
+    const blockDefinitions = Array.from(document.getElementsByTagName('block'));
+
+    // Ensure there are block definitions
+    if (blockDefinitions.length === 0)
+        return error("No block definitions found within the <blocks> tag. Please ensure you have at least one block definition within the <blocks> tag, or remove the <blocks> tag if you are not using blocks.")
+
+    // Iterate over each 'block' definition
+    blockDefinitions.forEach(function (blockDef) {
+        // Get the attributes of the block definition
+        const blockClassName = blockDef.className;
+        const blockAttributes = blockClassName.includes('-') ? blockClassName.split(' ')[0].split('-')[1].split(',') : null;
+
+        // Get the name of the block element
+        const blockName = blockAttributes !== null ? blockClassName.split(' ')[0].split('-')[0] : blockClassName;
+        
+        // Get an array of all 'block' elements in the document
+        const blockElements = Array.from(document.getElementsByTagName(blockName));
+
+        // Ensure there are block elements by the definition
+        if (blockElements.length === 0)
+            return error("No block elements found for block definition: " + blockName + ". Please ensure you have at least one block element with the name '" + blockName + "'.");
+
+        // Iterate over each 'block' element
+        blockElements.forEach(function (element) {
+            // Initially set element content to block definition content
+            let elementContent = blockDef.innerHTML;
+            if (blockAttributes !== null) {
+                // Apply attributes from block definition to block element
+                const elementAttributes = element.className.split(',');
+                blockAttributes.forEach(function (attribute, index) {
+                    elementContent = elementContent.replace("[" + attribute + "]", elementAttributes[index]);
                 });
             }
-            copy.innerHTML = content;
-
-            copy.style.display = 'block';
+            element.innerHTML = elementContent;
+            element.style.display = 'block';
         });
-        block.style.display = 'none';
+        blockDef.style.display = 'none';
     });
+}
 
-    // new variables system with <ref> tags
-    var refs = document.getElementsByTagName('ref');
-    refs = [...refs];
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
-    refs.forEach(function (ref) {
-        variables.forEach(function (variable) {
-            if (variable.className.split('-')[0] == ref.className)
-            {
-                ref.innerHTML = variable.innerHTML;
-            }
+/**
+ * This function populates all 'ref' elements in the document with their related variables.
+ */
+function populateVariables() {
+    // Get references and variables
+    const references = Array.from(document.getElementsByTagName('ref'));
+    const variables = Array.from(document.getElementsByTagName('var'));
+
+    // Ensure there are variables and references
+    if (variables.length === 0)
+        return error("No variable elements found within the <variables> tag. Please ensure you have at least one variable element within the <variables> tag, or remove the <variables> tag if you are not using variables");
+
+    if (references.length === 0)
+        return error("No reference elements found within the document, but you have variables. Please ensure you have at least one reference element for each variable, or remove unused variables.");
+
+    // Loop through each reference element
+    references.forEach(reference => {
+        // Get the class name prefix of the reference
+        const referenceClassName = reference.className.split('-')[0];
+
+        // Find the corresponding variable element
+        const correspondingVariable = variables.find(variable => {
+            const variableClassName = variable.className.split('-')[0];
+            return variableClassName === referenceClassName;
         });
-    });
 
-    document.getElementsByTagName('blocks')[0].style.display = 'none';
-    document.getElementsByTagName('variables')[0].style.display = 'none';
-    document.getElementsByTagName('imports')[0].style.display = 'none';
+        if (correspondingVariable)
+            reference.innerHTML = correspondingVariable.innerHTML;
+        else
+            return error("No variable found for reference: " + referenceClassName);
+    });
 }
 
 function setVar (name, value)
@@ -175,7 +218,7 @@ function copyBlock (name, parent, atrs)
     newCopy.className = atrs;
     var parentElm = document.querySelector(parent); 
     parentElm.appendChild(newCopy);
-    fillCopies();
+    populateBlocks();
 }
 
 function error(message) {
@@ -183,6 +226,7 @@ function error(message) {
     return null;
 }
 
-processImports();
+console.log('block.js has been successfully loaded and is ready for use.');
+processPage();
 loadSavedVars();
-fillCopies();
+populateBlocks();
