@@ -230,17 +230,41 @@ function getVar(name) {
     return error("No variable found with the name: " + name);
 }
 
-function numberOfCopies(name) {
+/**
+ * This function gets the number of elements of a specified type of block
+ * @param {string} name - The name of the block
+ * @returns - The number of elements of the specified block type
+ */
+function numberOfElements(name) {
     return document.getElementsByTagName(name).length;
 }
 
-function copyBlock (name, parent, atrs)
-{
-    var newCopy = document.createElement(name);
-    newCopy.className = atrs;
-    var parentElm = document.querySelector(parent); 
-    parentElm.appendChild(newCopy);
-    populateBlocks();
+/**
+ * This function is used to copy a block element to the page.
+ * @param {string} name - The name of the block you want to copy
+ * @param {string} parentSelector - The selector of the parent element you want to copy into
+ * @param {*} attributes - The attributes of the block you want to copy
+ */
+function copyBlock (name, parentSelector, attributes) {
+    // Validate parameters
+    if (!name || !parentSelector || !Array.isArray(attributes))
+        return error("Invalid input. Please provide a name, parent selector, and attributes for the block in order to call copyBlock().");
+
+    // Create the new element
+    const newElement = document.createElement(name);
+    newElement.className = attributes.join(',');
+
+    // Find the parent element
+    const parentElement = document.querySelector(parentSelector);
+
+    // Check if the parent element exists
+    if (!parentElement)
+        return error("No parent element found with the selector: " + parentSelector);
+
+    // Append the new element to the parent element
+    parentElement.appendChild(newElement);
+    
+    populatePage();
 }
 
 function error(message) {
