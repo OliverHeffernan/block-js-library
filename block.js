@@ -278,6 +278,6 @@ function error(message) {
 }
 
 console.log('block.js has been successfully loaded and is ready for use.');
-processPage();
+populatePage();
 loadSavedVars();
 populateBlocks();
