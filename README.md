@@ -46,6 +46,23 @@ index.html
 </body>
 </html>
 ```
+#### Simple localhost:
+Simple way to set up localhost.
+<ol>
+    <li>If not already installed, install python.</li>
+    <li>Open terminal/command prompt at project folder.</li>
+    <li>
+        Type command
+        
+```yaml
+python3 -m http.server 8000
+```
+        
+</li>
+    <li>Open link 'http://localhost:8000' in a web browser.</li>
+    <li>To terminate the localhost session, go back to the terminal/command prompt. Then use the keyboard shortcut control+c</li>
+</ol>
+
 #### Block Attributes:
 When you have multiple copies of an element on your webpage, but they each have slight differences. e.g. A product container on an online shopping website, the same container, but with a different image, title, and other attributes. On a block, you can have attributes, that can be set for each copy of the block.
 ```html
