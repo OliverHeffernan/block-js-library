@@ -1,4 +1,4 @@
-const usingBlocks = document.getElementsByTagName('blocks')[0] !== undefined;
+const usingBlocks = document.getElementsByTagName('blocks')[0] !== undefined && document.getElementsByTagName('imports')[0] !== undefined;
 const usingVariables = document.getElementsByTagName('variables')[0] !== undefined;
 const usingImports = document.getElementsByTagName('imports')[0] !== undefined;
 
@@ -83,7 +83,7 @@ function populateBlocks() {
 
     // Ensure there are block definitions
     if (blockDefinitions.length === 0)
-        return error("No block definitions found within the <blocks> tag. Please ensure you have at least one block definition within the <blocks> tag, or remove the <blocks> tag if you are not using blocks.")
+        return;
 
     // Iterate over each 'block' definition
     blockDefinitions.forEach(function (blockDef) {
@@ -129,10 +129,10 @@ function populateVariables() {
 
     // Ensure there are variables and references
     if (variables.length === 0)
-        return error("No variable elements found within the <variables> tag. Please ensure you have at least one variable element within the <variables> tag, or remove the <variables> tag if you are not using variables");
+        return;
 
     if (references.length === 0)
-        return error("No reference elements found within the document, but you have variables. Please ensure you have at least one reference element for each variable, or remove unused variables.");
+        return;
 
     // Loop through each reference element
     references.forEach(reference => {
@@ -278,6 +278,6 @@ function error(message) {
 }
 
 console.log('block.js has been successfully loaded and is ready for use.');
+processImports();
 populatePage();
 loadSavedVars();
-populateBlocks();
