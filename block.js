@@ -1,3 +1,4 @@
+console.log('block.js loaded');
 /**
  * This function is used to process the <imports> tag and import the files listed within it to the <blocks> tag.
  */
@@ -112,17 +113,25 @@ function setVar (name, value)
 {
     var variables = document.getElementsByTagName('var');
     variables = [...variables];
+    var existing = false;
     variables.forEach(function (variable) {
         var atrs = variable.className.split('-');
         if (atrs[0] == name)
         {
             variable.innerHTML = value;
+            existing = true;
             if (atrs[1] == 'save')
             {
                 localStorage.setItem(name, value);
             }
         }
     });
+    if (!existing)
+    {
+        var newVar = document.createElement('var');
+        var variables = document.getElementsByTagName('variables');
+        variables.appendChild(newVar);
+    }
     fillCopies();
 }
 
@@ -144,7 +153,15 @@ function loadSavedVars ()
 
 function getVar (name)
 {
-    return document.getElementsByTagName('variables')[0].getElementsByClassName(name)[0].innerHTML;
+    var variables = document.getElementsByTagName('var');
+    variables = [...variables];
+    variables.forEach(function (variable) {
+        var atrs = variable.className.split('-');
+        if (atrs[0] == name)
+        {
+            return variable.innerHTML;
+        }
+    });
 }
 
 function numberOfCopies (name)
