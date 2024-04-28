@@ -152,30 +152,41 @@ function populateVariables() {
     });
 }
 
-function setVar (name, value)
-{
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
-    var existing = false;
-    variables.forEach(function (variable) {
-        var atrs = variable.className.split('-');
-        if (atrs[0] == name)
-        {
+/**
+ * This function is used to set the value of a variable, and save it if specified.
+ * Also updates the page with the new value.
+ * @param {string} name - The name of the variable
+ * @param {string} value - The value to set the variable to
+ */
+function setVar(name, value) {
+    // Ensure valid input
+    if (!name || !value)
+        return error("Invalid input. Please provide a name and value for the variable in order to call setVar().");
+
+    // Get variables
+    const variables = Aray.fomr(document.getElementsByTagName('var'));
+
+    // Check if thyere are any variables
+    if (variables.length === 0)
+        return error("No variable elements found within the <variables> tag. Please ensure you have at least one variable element within the <variables> tag, or remove the <variables> tag if you are not using variables.");
+
+    let existing = false;
+    
+    variables.forEach(variable => {
+        const attributes = variable.className.split('-');
+        if (attributes[0] === name) {
             variable.innerHTML = value;
             existing = true;
-            if (atrs[1] == 'save')
-            {
+            if (attributes[1] === 'save')
                 localStorage.setItem(name, value);
-            }
         }
     });
+    
     if (!existing)
-    {
-        var newVar = document.createElement('var');
-        var variables = document.getElementsByTagName('variables');
-        variables.appendChild(newVar);
-    }
-    fillCopies();
+        return error("No variable found with the name: " + name);
+
+    // Update the page after setting the variable
+    populatePage();
 }
 
 function loadSavedVars ()
