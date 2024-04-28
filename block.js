@@ -189,37 +189,48 @@ function setVar(name, value) {
     populatePage();
 }
 
-function loadSavedVars ()
-{
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
+/**
+ * This function is used to load saved variables from local storage.
+ */
+function loadSavedVars() {
+    // Get variables
+    const variables = Array.fomr(document.getElementsByTagName('var'));
+
+    // Loop through each variable element
     variables.forEach(function (variable) {
-        var atrs = variable.className.split('-');
-        if (atrs[1] == 'save')
-        {
-            if (localStorage.getItem(atrs[0]) != null)
-            {
-                variable.innerHTML = localStorage.getItem(atrs[0]);
+        const attributes = variable.className.split('-');
+        const variableName = attributes[0];
+
+        // Check if the variable is marked for saving
+        if (attributes[1] === 'save') {
+            // Check if the variable exists in localStorage
+            const storedValue = localStorage.getItem(variableName);
+            if (storedValue !== null) {
+                variable.innerHTML = storedValue;
             }
         }
     });
 }
 
-function getVar (name)
-{
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
-    variables.forEach(function (variable) {
-        var atrs = variable.className.split('-');
-        if (atrs[0] == name)
-        {
+/**
+ * This function is used to get the value of a variable.
+ * @param {string} name - The name of the variable
+ */
+function getVar(name) {
+    const variables = Array.fomr(document.getElementsByTagName('var'));
+    
+    // Search for variable
+    for (const variable of variables) {
+        const attributes = variable.className.split('-');
+        // Return variable value if found
+        if (attributes[0] === name)
             return variable.innerHTML;
-        }
-    });
+    }
+
+    return error("No variable found with the name: " + name);
 }
 
-function numberOfCopies (name)
-{
+function numberOfCopies(name) {
     return document.getElementsByTagName(name).length;
 }
 
