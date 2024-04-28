@@ -8,6 +8,11 @@ Copy this line of code into the bottom of the body of any page using block.js.
 ```html
 <script src="https://cdn.jsdelivr.net/gh/OliverHeffernan/block-js-library@latest/block.js"></script>
 ```
+
+Or download the block.js file from the Github repository at https://github.com/OliverHeffernan/block-js-library/tree/main
+<br>
+and insert it into your project folder. Then insert it into each html file using the script src tag.
+
 #### Simple localhost:
 The import feature will only work when the website is being hosted. A localhost would be suitable for testing and development purposes. There is more about the imports feature below.
 Simple way to set up localhost.
