@@ -67,6 +67,7 @@ In the block, the name of each attribute is listed in the className, seperated b
 Then, in the copy of the block, set the className to a list of the values of each attribute seperated by commas.
 
 #### copyBlock (name, parent, atrs)
+##### Parameters:
 <ul>
     <li>Name: The name of the block that is being copied.</li>
     <li>Parent: A string to which would be entered into the query selector function to access the desired parent of the new copy.</li>
@@ -86,7 +87,7 @@ task.html
 ```
 
 todo.html
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,10 +130,17 @@ The name of the variable is set using the className, while the value is set usin
 </body>
 ```
 #### setVar(name, value)
+##### Parameters:
+<ul>
+    <li>name: The variable name e.g. 'username'</li>
+    <li>value: The value of the variable e.g. 'John Doe'</li>
+</ul>
 To change the value of a variable, simply use the setVar function.
+
 ```javascript
 setVar(name, value);
 ```
+
 A great way to use this function is to set it as the onclick function for a button, and setting the value as the value of a input field. This is useful for allowing users to enter their username.
 ```html
 <body>
@@ -145,14 +153,19 @@ A great way to use this function is to set it as the onclick function for a butt
 </body>
 ```
 When using this function, if the variable name provided does not already exist, it will create a new variable.
-<ul>
-    <li>name: The variable name e.g. 'username'</li>
-    <li>value: The value of the variable e.g. 'John Doe'</li>
-</ul>
+            
 #### Saved Variables
 You can also set a variable to be saved in the localStorage of the user's device.
 <br>
 This is done by setting the className of the var tag to the name of the variable and the word save, seperated by a hyphen. An example is shown below.
+
 ```html
 <var class='username-save'>John Doe</var>
 ```
+
+#### getVar(name)
+##### Parameters:
+<ul>
+    <li>name: The name of the variable</li>
+</ul>
+This function returns the value of a specified variable. Can be called in any javaScript.
