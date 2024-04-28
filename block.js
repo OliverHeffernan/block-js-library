@@ -24,7 +24,7 @@ function processImports() {
         return error("Only one <blocks> tag is allowed. Please ensure that all blocks you want to import are listed within a single <blocks> tag, separated by commas.");
     
     if (blocksTag.length == 0)
-        return error("Error: The <blocks> tag is missing. Please ensure you have a <blocks> tag in order to use imports.");
+        return error("The <blocks> tag is missing. Please ensure you have a <blocks> tag in order to use imports.");
 
     // Get the content of the <imports> tag and hide it
     importsTag = importsTag[0];
