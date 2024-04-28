@@ -1,4 +1,7 @@
-console.log('block.js loaded');
+const usingBlocks = document.getElementsByTagName('blocks')[0] !== undefined;
+const usingVariables = document.getElementsByTagName('variables')[0] !== undefined;
+const usingImports = document.getElementsByTagName('imports')[0] !== undefined;
+
 /**
  * This function is used to process the <imports> tag and import the files listed within it to the <blocks> tag.
  */
@@ -52,137 +55,229 @@ function importFromFile(url) {
     return xhr.status === 200 ? xhr.responseText : error("Failed to import file: " + url);
 }
 
-function fillCopies() {
-    var blocks = document.getElementsByTagName('block');
-    blocks = [...blocks];
+/**
+ * This function is used to process the page and populate the blocks, variables.
+ * Additinally, hide the <blocks>, <variables>, and <imports> tags.
+ */
+function populatePage() {
+    if (usingBlocks) {
+        populateBlocks();
+        document.getElementsByTagName('blocks')[0].style.display = 'none';
+    }
 
-    blocks.forEach(function (block)
-    {
-        var hasAtrs = true;
-        var blockName;
-        if (!block.className.includes('-'))
-        {
-            hasAtrs = false;
-            blockName = block.className;
-        }
-        else
-        {
-            var blockFtrs = block.className.split(' ')[0].split('-');
-            blockName = blockFtrs[0];
-            var blockAtrs = blockFtrs[1].split(",");
-        }
-        var blockCopies = document.getElementsByTagName(blockName)
-        var blockCopiesArray = [...blockCopies];
+    if (usingVariables) {
+        populateVariables();
+        document.getElementsByTagName('variables')[0].style.display = 'none';
+    }
 
-        blockCopiesArray.forEach(function (copy) {
-            var content = block.innerHTML;
-            if (hasAtrs)
-            {
-                var copyAtrs = copy.className.split(',');
-                blockAtrs.forEach(function (atr, index) {
-                    content = content.replace("[" + atr + "]", copyAtrs[index]);
+    if (usingImports)
+        document.getElementsByTagName('imports')[0].style.display = 'none';
+}
+
+/**
+ * This function populates all 'block' elements in the document.
+ */
+function populateBlocks() {
+    // Get an array of all 'block' definitions in the document
+    const blockDefinitions = Array.from(document.getElementsByTagName('block'));
+
+    // Ensure there are block definitions
+    if (blockDefinitions.length === 0)
+        return error("No block definitions found within the <blocks> tag. Please ensure you have at least one block definition within the <blocks> tag, or remove the <blocks> tag if you are not using blocks.")
+
+    // Iterate over each 'block' definition
+    blockDefinitions.forEach(function (blockDef) {
+        // Get the attributes of the block definition
+        const blockClassName = blockDef.className;
+        const blockAttributes = blockClassName.includes('-') ? blockClassName.split(' ')[0].split('-')[1].split(',') : null;
+
+        // Get the name of the block element
+        const blockName = blockAttributes !== null ? blockClassName.split(' ')[0].split('-')[0] : blockClassName;
+        
+        // Get an array of all 'block' elements in the document
+        const blockElements = Array.from(document.getElementsByTagName(blockName));
+
+        // Ensure there are block elements by the definition
+        if (blockElements.length === 0)
+            return error("No block elements found for block definition: " + blockName + ". Please ensure you have at least one block element with the name '" + blockName + "'.");
+
+        // Iterate over each 'block' element
+        blockElements.forEach(function (element) {
+            // Initially set element content to block definition content
+            let elementContent = blockDef.innerHTML;
+            if (blockAttributes !== null) {
+                // Apply attributes from block definition to block element
+                const elementAttributes = element.className.split(',');
+                blockAttributes.forEach(function (attribute, index) {
+                    elementContent = elementContent.replace("[" + attribute + "]", elementAttributes[index]);
                 });
             }
-            copy.innerHTML = content;
-
-            copy.style.display = 'block';
+            element.innerHTML = elementContent;
+            element.style.display = 'block';
         });
-        block.style.display = 'none';
+        blockDef.style.display = 'none';
     });
-
-    // new variables system with <ref> tags
-    var refs = document.getElementsByTagName('ref');
-    refs = [...refs];
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
-    refs.forEach(function (ref) {
-        variables.forEach(function (variable) {
-            if (variable.className.split('-')[0] == ref.className)
-            {
-                ref.innerHTML = variable.innerHTML;
-            }
-        });
-    });
-
-    document.getElementsByTagName('blocks')[0].style.display = 'none';
-    document.getElementsByTagName('variables')[0].style.display = 'none';
-    document.getElementsByTagName('imports')[0].style.display = 'none';
 }
 
-function setVar (name, value)
-{
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
-    var existing = false;
-    variables.forEach(function (variable) {
-        var atrs = variable.className.split('-');
-        if (atrs[0] == name)
-        {
+/**
+ * This function populates all 'ref' elements in the document with their related variables.
+ */
+function populateVariables() {
+    // Get references and variables
+    const references = Array.from(document.getElementsByTagName('ref'));
+    const variables = Array.from(document.getElementsByTagName('var'));
+
+    // Ensure there are variables and references
+    if (variables.length === 0)
+        return error("No variable elements found within the <variables> tag. Please ensure you have at least one variable element within the <variables> tag, or remove the <variables> tag if you are not using variables");
+
+    if (references.length === 0)
+        return error("No reference elements found within the document, but you have variables. Please ensure you have at least one reference element for each variable, or remove unused variables.");
+
+    // Loop through each reference element
+    references.forEach(reference => {
+        // Get the class name prefix of the reference
+        const referenceClassName = reference.className.split('-')[0];
+
+        // Find the corresponding variable element
+        const correspondingVariable = variables.find(variable => {
+            const variableClassName = variable.className.split('-')[0];
+            return variableClassName === referenceClassName;
+        });
+
+        if (correspondingVariable)
+            reference.innerHTML = correspondingVariable.innerHTML;
+        else
+            return error("No variable found for reference: " + referenceClassName);
+    });
+}
+
+/**
+ * This function is used to set the value of a variable, and save it if specified.
+ * Also updates the page with the new value.
+ * @param {string} name - The name of the variable
+ * @param {string} value - The value to set the variable to
+ */
+function setVar(name, value) {
+    // Ensure valid input
+    if (!name || !value)
+        return error("Invalid input. Please provide a name and value for the variable in order to call setVar().");
+
+    // Get variables
+    const variables = Aray.fomr(document.getElementsByTagName('var'));
+
+    // Check if thyere are any variables
+    if (variables.length === 0)
+        return error("No variable elements found within the <variables> tag. Please ensure you have at least one variable element within the <variables> tag, or remove the <variables> tag if you are not using variables.");
+
+    let existing = false;
+    
+    variables.forEach(variable => {
+        const attributes = variable.className.split('-');
+        if (attributes[0] === name) {
             variable.innerHTML = value;
             existing = true;
-            if (atrs[1] == 'save')
-            {
+            if (attributes[1] === 'save')
                 localStorage.setItem(name, value);
-            }
         }
     });
+    
     if (!existing)
-    {
-        var newVar = document.createElement('var');
-        var variables = document.getElementsByTagName('variables');
-        variables.appendChild(newVar);
-    }
-    fillCopies();
+        return error("No variable found with the name: " + name);
+
+    // Update the page after setting the variable
+    populatePage();
 }
 
-function loadSavedVars ()
-{
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
+/**
+ * This function is used to load saved variables from local storage.
+ */
+function loadSavedVars() {
+    // Get variables
+    const variables = Array.fomr(document.getElementsByTagName('var'));
+
+    // Loop through each variable element
     variables.forEach(function (variable) {
-        var atrs = variable.className.split('-');
-        if (atrs[1] == 'save')
-        {
-            if (localStorage.getItem(atrs[0]) != null)
-            {
-                variable.innerHTML = localStorage.getItem(atrs[0]);
+        const attributes = variable.className.split('-');
+        const variableName = attributes[0];
+
+        // Check if the variable is marked for saving
+        if (attributes[1] === 'save') {
+            // Check if the variable exists in localStorage
+            const storedValue = localStorage.getItem(variableName);
+            if (storedValue !== null) {
+                variable.innerHTML = storedValue;
             }
         }
     });
 }
 
-function getVar (name)
-{
-    var variables = document.getElementsByTagName('var');
-    variables = [...variables];
-    variables.forEach(function (variable) {
-        var atrs = variable.className.split('-');
-        if (atrs[0] == name)
-        {
+/**
+ * This function is used to get the value of a variable.
+ * @param {string} name - The name of the variable
+ */
+function getVar(name) {
+    const variables = Array.fomr(document.getElementsByTagName('var'));
+    
+    // Search for variable
+    for (const variable of variables) {
+        const attributes = variable.className.split('-');
+        // Return variable value if found
+        if (attributes[0] === name)
             return variable.innerHTML;
-        }
-    });
+    }
+
+    return error("No variable found with the name: " + name);
 }
 
-function numberOfCopies (name)
-{
+/**
+ * This function gets the number of elements of a specified type of block
+ * @param {string} name - The name of the block
+ * @returns - The number of elements of the specified block type
+ */
+function numberOfElements(name) {
     return document.getElementsByTagName(name).length;
 }
 
-function copyBlock (name, parent, atrs)
-{
-    var newCopy = document.createElement(name);
-    newCopy.className = atrs;
-    var parentElm = document.querySelector(parent); 
-    parentElm.appendChild(newCopy);
-    fillCopies();
+/**
+ * This function is used to copy a block element to the page.
+ * @param {string} name - The name of the block you want to copy
+ * @param {string} parentSelector - The selector of the parent element you want to copy into
+ * @param {*} attributes - The attributes of the block you want to copy
+ */
+function copyBlock (name, parentSelector, attributes) {
+    // Validate parameters
+    if (!name || !parentSelector || !Array.isArray(attributes))
+        return error("Invalid input. Please provide a name, parent selector, and attributes for the block in order to call copyBlock().");
+
+    // Create the new element
+    const newElement = document.createElement(name);
+    newElement.className = attributes.join(',');
+
+    // Find the parent element
+    const parentElement = document.querySelector(parentSelector);
+
+    // Check if the parent element exists
+    if (!parentElement)
+        return error("No parent element found with the selector: " + parentSelector);
+
+    // Append the new element to the parent element
+    parentElement.appendChild(newElement);
+
+    populatePage();
 }
 
+/**
+ * This function prints a error message to the console and returns null
+ * @param {*} message - The error message to print
+ * @returns - null
+ */
 function error(message) {
     console.error("Error: " + message);
     return null;
 }
 
-processImports();
+console.log('block.js has been successfully loaded and is ready for use.');
+processPage();
 loadSavedVars();
-fillCopies();
+populateBlocks();
