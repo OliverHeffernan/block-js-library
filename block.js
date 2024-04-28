@@ -194,7 +194,7 @@ function setVar(name, value) {
  */
 function loadSavedVars() {
     // Get variables
-    const variables = Array.fomr(document.getElementsByTagName('var'));
+    const variables = Array.from(document.getElementsByTagName('var'));
 
     // Loop through each variable element
     variables.forEach(function (variable) {
