@@ -263,10 +263,15 @@ function copyBlock (name, parentSelector, attributes) {
 
     // Append the new element to the parent element
     parentElement.appendChild(newElement);
-    
+
     populatePage();
 }
 
+/**
+ * This function prints a error message to the console and returns null
+ * @param {*} message - The error message to print
+ * @returns - null
+ */
 function error(message) {
     console.error("Error: " + message);
     return null;
