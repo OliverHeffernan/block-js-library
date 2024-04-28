@@ -6,7 +6,7 @@ Block.js is an open-source, lightweight, simple-to-use JavaScript front-end fram
 Copy this line of code into the bottom of the body of any page using block.js.
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/OliverHeffernan/block-js-library@main/block.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/OliverHeffernan/block-js-library@latest/block.js"></script>
 ```
 #### Simple localhost:
 The import feature will only work when the website is being hosted. A localhost would be suitable for testing and development purposes. There is more about the imports feature below.
