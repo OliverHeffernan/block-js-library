@@ -99,9 +99,12 @@ When you have multiple copies of an element on your webpage, but they each have 
         </table>
     </block>
 </blocks>
-<egblock class="text 1,text 2,text 3"></egBlock>
-<egblock class="text 1,Hello,text 3"></egBlock>
+<egblock class='["text 1", "text 2", "text 3"]'></egblock>
+<egblock class='["text 1", "Hello", "text 3"]'></egblock>
 ```
+To define a block, in the blocks tag create a block tag. Then in the className, type the name of the block. Then type a hyphen. Then type a list of the attributes seperated by commas, as above.
+
+Then to create a copy of this block, create a tag where the tag name is the block name. Then set the className to an array of the attributes' values.
 
 In the block, the name of each attribute is listed in the className, seperated by a comma. Then to reference the attributes within the block, you put the attribute name within square brackets. <br>
 Then, in the copy of the block, set the className to a list of the values of each attribute seperated by commas.
