@@ -198,7 +198,7 @@ A great way to use this function is to set it as the onclick function for a butt
     </variables>
     <input id='nameInput' type='text'>
     <button onclick='setVar("username", document.getElementById("nameInput").value)'>Submit</button>
-    <p>Welcome to this website <ref class='username'></ref>
+    <p>Welcome to this website <ref class='username'></ref></p>
 </body>
 ```
 
