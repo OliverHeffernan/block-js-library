@@ -194,7 +194,7 @@ A great way to use this function is to set it as the onclick function for a butt
 ```html
 <body>
     <variables>
-        <var class='username></var>
+        <var class='username'></var>
     </variables>
     <input id='nameInput' type='text'>
     <button onclick='setVar("username", document.getElementById("nameInput").value)'>Submit</button>
